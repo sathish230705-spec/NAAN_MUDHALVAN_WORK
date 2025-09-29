@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechShop - Premium Product Catalog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo i {
+            color: #ffd700;
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 2rem;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .cart-btn {
+            background: #ff6b6b;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        /* Main Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+        
+        /* Filters Sidebar */
+        .filters-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-label {
+            display: block;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            font-size: 0.95rem;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .price-range {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .price-range input {
+            flex: 1;
+        }
+        
+        .filter-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            width: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        
+        /* Products Section */
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .results-info {
+            font-size: 1.1rem;
+            color: #4a5568;
+        }
+        
+        .sort-options {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        /* Product Card */
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: #ff6b6b;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(45deg, #f0f4ff, #e6eeff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-category {
+            color: #667eea;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .product-brand {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stars {
+            color: #fbbf24;
+        }
+        
+        .rating-count {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .current-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .original-price {
+            font-size: 1.1rem;
+            color: #a0aec0;
+            text-decoration: line-through;
+        }
+        
+        .discount {
+            color: #48bb78;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .add-cart-btn {
+            flex: 1;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .add-cart-btn:hover {
+            background: #5a67d8;
+        }
+        
+        .wishlist-btn {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .wishlist-btn:hover {
+            background: #fed7d7;
+            border-color: #feb2b2;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-bar {
+                margin: 0;
+                max-width: 100%;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Footer */
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    TechShop
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for products...">
+                </div>
+                <div class="header-actions">
+                    <div class="user-account">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="cart-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        Cart (0)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-grid">
+            <!-- Filters Sidebar -->
+            <div class="filters-card">
+                <div class="filter-header">
+                    <h2 class="filter-title">Filters</h2>
+                    <button class="filter-btn" id="applyFilters">Apply</button>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Category</label>
+                    <select id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing & Fashion</option>
+                        <option value="home">Home & Kitchen</option>
+                        <option value="sports">Sports & Fitness</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Price Range</label>
+                    <div class="price-range">
+                        <input type="number" id="minPrice" placeholder="Min $" min="0">
+                        <input type="number" id="maxPrice" placeholder="Max $" min="0">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Brand</label>
+                    <select id="brandFilter">
+                        <option value="all">All Brands</option>
+                        <option value="samsung">Samsung</option>
+                        <option value="apple">Apple</option>
+                        <option value="nike">Nike</option>
+                        <option value="sony">Sony</option>
+                        <option value="lg">LG</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Rating</label>
+                    <select id="ratingFilter">
+                        <option value="0">Any Rating</option>
+                        <option value="4">4⭐ & above</option>
+                        <option value="4.5">4.5⭐ & above</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Availability</label>
+                    <select id="availabilityFilter">
+                        <option value="all">All Products</option>
+                        <option value="inStock">In Stock</option>
+                        <option value="outOfStock">Out of Stock</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div>
+                <div class="products-header">
+                    <div class="results-info" id="resultsCount">Showing 12 products</div>
+                    <div class="sort-options">
+                        <select id="sortFilter">
+                            <option value="featured">Featured</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Customer Ratings</option>
+                            <option value="newest">Newest First</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="products-grid" id="productsGrid">
+                    <!-- Products will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Shop</h3>
+                    <p>Electronics</p>
+                    <p>Clothing</p>
+                    <p>Home & Kitchen</p>
+                    <p>Sports</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Customer Service</h3>
+                    <p>Contact Us</p>
+                    <p>Returns & Refunds</p>
+                    <p>Shipping Info</p>
+                    <p>FAQ</p>
+                </div>
+                <div class="footer-section">
+                    <h3>About TechShop</h3>
+                    <p>About Us</p>
+                    <p>Careers</p>
+                    <p>Privacy Policy</p>
+                    <p>Terms of Service</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Product Data - Real shopping website products
+        const products = [
+            {
+                id: 1,
+                name: "Wireless Bluetooth Headphones",
+                price: 79.99,
+                originalPrice: 129.99,
+                category: "electronics",
+                brand: "Sony",
+                rating: 4.5,
+                reviewCount: 1247,
+                inStock: true,
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop"
+            },
+            {
+                id: 2,
+                name: "Premium Smart Watch Series 6",
+                price: 349.99,
+                originalPrice: 399.99,
+                category: "electronics",
+                brand: "Apple",
+                rating: 4.8,
+                reviewCount: 2895,
+                inStock: true,
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=200&fit=crop"
+            },
+            {
+                id: 3,
+                name: "Running Shoes - Men's",
+                price: 89.99,
+                originalPrice: 119.99,
+                category: "clothing",
+                brand: "Nike",
+                rating: 4.3,
+                reviewCount: 876,
+                inStock: true,
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=200&fit=crop"
+            },
+            {
+                id: 4,
+                name: "4K Ultra HD Smart TV 55\"",
+                price: 599.99,
+                originalPrice: 799.99,
+                category: "electronics",
+                brand: "Samsung",
+                rating: 4.6,
+                reviewCount: 1562,
+                inStock: false,
+                image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=300&h=200&fit=crop"
+            },
+            {
+                id: 5,
+                name: "Professional Blender",
+                price: 129.99,
+                originalPrice: 159.99,
+                category: "home",
+                brand: "LG",
+                rating: 4.2,
+                reviewCount: 543,
+                inStock: true,
+                image: "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=300&h=200&fit=crop"
+            },
+            {
+                id: 6,
+                name: "Wireless Gaming Mouse",
+                price: 69.99,
+                originalPrice: 89.99,
+                category: "electronics",
+                brand: "Sony",
+                rating: 4.4,
+                reviewCount: 932,
+                inStock: true,
+                image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=300&h=200&fit=crop"
+            },
+            {
+                id: 7,
+                name: "Yoga Mat Premium",
+                price: 39.99,
+                originalPrice: 49.99,
+                category: "sports",
+                brand: "Nike",
+                rating: 4.1,
+                reviewCount: 321,
+                inStock: true,
+                image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&h=200&fit=crop"
+            },
+            {
+                id: 8,
+                name: "Wireless Earbuds Pro",
+                price: 199.99,
+                originalPrice: 249.99,
+                category: "electronics",
+                brand: "Apple",
+                rating: 4.7,
+                reviewCount: 2045,
+                inStock: true,
+                image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300&h=200&fit=crop"
+            },
+            {
+                id: 9,
+                name: "Designer Handbag",
+                price: 299.99,
+                originalPrice: 399.99,
+                category: "clothing",
+                brand: "Sony",
+                rating: 4.5,
+                reviewCount: 678,
+                inStock: true,
+                image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300&h=200&fit=crop"
+            },
+            {
+                id: 10,
+                name: "Smart Home Hub",
+                price: 149.99,
+                originalPrice: 199.99,
+                category: "home",
+                brand: "Samsung",
+                rating: 4.3,
+                reviewCount: 432,
+                inStock: true,
+                image: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=300&h=200&fit=crop"
+            },
+            {
+                id: 11,
+                name: "Fitness Tracker",
+                price: 89.99,
+                originalPrice: 119.99,
+                category: "sports",
+                brand: "LG",
+                rating: 4.0,
+                reviewCount: 289,
+                inStock: false,
+                image: "https://images.unsplash.com/photo-1575311373936-9e857a0366cc?w=300&h=200&fit=crop"
+            },
+            {
+                id: 12,
+                name: "Wireless Charger",
+                price: 49.99,
+                originalPrice: 69.99,
+                category: "electronics",
+                brand: "Apple",
+                rating: 4.6,
+                reviewCount: 765,
+                inStock: true,
+                image: "https://images.unsplash.com/photo-1609091839311-d5365f2e0c5a?w=300&h=200&fit=crop"
+            }
+        ];
+
+        let filters = {
+            category: 'all',
+            minPrice: '',
+            maxPrice: '',
+            brand: 'all',
+            minRating: 0,
+            availability: 'all',
+            sortBy: 'featured'
+        };
+
+        function handleFilterChange() {
+            const filteredProducts = filterProducts();
+            renderProducts(filteredProducts);
+        }
+
+        function filterProducts() {
+            return products.filter(product => {
+                // Category filter
+                if (filters.category !== 'all' && product.category !== filters.category) return false;
+                
+                // Price filter
+                if (filters.minPrice && product.price < Number(filters.minPrice)) return false;
+                if (filters.maxPrice && product.price > Number(filters.maxPrice)) return false;
+                
+                // Brand filter
+                if (filters.brand !== 'all' && product.brand !== filters.brand) return false;
+                
+                // Rating filter
+                if (filters.minRating && product.rating < filters.minRating) return false;
+                
+                // Availability filter
+                if (filters.availability !== 'all') {
+                    if (filters.availability === 'inStock' && !product.inStock) return false;
+                    if (filters.availability === 'outOfStock' && product.inStock) return false;
+                }
+                
+                return true;
+            }).sort((a, b) => {
+                // Sort products
+                switch (filters.sortBy) {
+                    case 'price-low':
+                        return a.price - b.price;
+                    case 'price-high':
+                        return b.price - a.price;
+                    case 'rating':
+                        return b.rating - a.rating;
+                    case 'newest':
+                        return b.id - a.id;
+                    default:
+                        return a.id - b.id; // featured
+                }
+            });
+        }
+
+        function renderProducts(productsToRender) {
+            const productsGrid = document.getElementById('productsGrid');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            resultsCount.textContent = `Showing ${productsToRender.length} products`;
+            
+            if (productsToRender.length === 0) {
+                productsGrid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                        <h3>No products found</h3>
+                        <p>Try adjusting your filters to see more results</p>
+                    </div>
+                `;
+            } else {
+                productsGrid.innerHTML = productsToRender.map(product => {
+                    const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+                    
+                    return `
+                    <div class="product-card">
+                        ${!product.inStock ? '<div class="product-badge">Out of Stock</div>' : 
+                          discount > 10 ? `<div class="product-badge">${discount}% OFF</div>` : ''}
+                        
+                        <div class="product-image">
+                            <img src="${product.image}" alt="${product.name}">
+                        </div>
+                        
+                        <div class="product-info">
+                            <div class="product-category">${product.category}</div>
+                            <h3 class="product-title">${product.name}</h3>
+                            <div class="product-brand">by ${product.brand}</div>
+                            
+                            <div class="product-rating">
+                                <div class="stars">
+                                    ${'★'.repeat(Math.floor(product.rating))}${product.rating % 1 >= 0.5 ? '⭐' : ''}
+                                </div>
+                                <span class="rating-count">(${product.reviewCount})</span>
+                            </div>
+                            
+                            <div class="product-price">
+                                <span class="current-price">$${product.price}</span>
+                                ${product.originalPrice > product.price ? 
+                                    `<span class="original-price">$${product.originalPrice}</span>
+                                     <span class="discount">Save ${discount}%</span>` : ''}
+                            </div>
+                            
+                            <div class="product-actions">
+                                <button class="add-cart-btn" ${!product.inStock ? 'disabled' : ''}>
+                                    ${product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                                </button>
+                                <button class="wishlist-btn">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up event listeners
+            document.getElementById('categoryFilter').addEventListener('change', (e) => {
+                filters.category = e.target.value;
+                handleFilterChange();
+            });
+            
+            document.getElementById('minPrice').addEventListener('input', (e) => {
+                filters.minPrice = e.target.value;
+                handleFilterChange();
+            });
+            
+            document.getElementById('maxPrice').addEventListener('input', (e) => {
+                filters.maxPrice = e.target.value;
+                handleFilterChange();
+            });
+            
+            document.getElementById('brandFilter').addEventListener('change', (e) => {
+                filters.brand = e.target.value;
+                handleFilterChange();
+            });
+            
+            document.getElementById('ratingFilter').addEventListener('change', (e) => {
+                filters.minRating = Number(e.target.value);
+                handleFilterChange();
+            });
+            
+            document.getElementById('availabilityFilter').addEventListener('change', (e) => {
+                filters.availability = e.target.value;
+                handleFilterChange();
+            });
+            
+            document.getElementById('sortFilter').addEventListener('change', (e) => {
+                filters.sortBy = e.target.value;
+                handleFilterChange();
+            });
+            
+            document.getElementById('applyFilters').addEventListener('click', handleFilterChange);
+            
+            // Initial render
+            renderProducts(products);
+        });
+    </script>
+</body>
+</html>
